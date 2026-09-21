@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>El Salón de la Fortuna</title>
+  <link rel="stylesheet" href="./styles/style.css">
+</head>
+<body>
+  <main class="game-shell">
+    <section class="panel character-panel" aria-label="Personaje seleccionado">
+      <p class="panel-label">CONVERSANDO CON</p>
+      <img id="face" src="./images/confucio.png" width="180" height="240" alt="Retrato de Henry Ford">
+      <h1 id="character-name">Henry Ford</h1>
+    </section>
+
+    <section class="panel scene-panel" aria-label="Escenario">
+      <img id="scene" width="640" height="480" usemap="#game-map" alt="El Salón de la Fortuna" src="./images/salon-de-las-ideas.png">
+      <map name="game-map" id="game-map"></map>
+      <div id="sprites" class="characters-layer" aria-hidden="true"></div>
+      <p id="hover-message" class="hover-message" aria-live="polite">Hablando con Henry Ford.</p>
+    </section>
+
+    <section class="panel logo-panel" aria-label="Logo del juego">
+      <div class="logo-mark" aria-hidden="true">$</div>
+      <p>AVENTURA GRÁFICA</p>
+      <h2>EL SALÓN<br>DE LA FORTUNA</h2>
+      <span>Preguntá. Negociá. Amasá.</span>
+    </section>
+
+    <section class="panel chat-panel" id="conversacion" aria-label="Conversación">
+      <div id="conversation" class="conversation" aria-live="polite"><article class="message assistant"><strong>HENRY FORD</strong><p>Hola. Soy Henry Ford. ¿Qué te gustaría preguntarme?</p></article></div>
+      <form id="question-form" class="question-form">
+        <label class="sr-only" for="question">Tu pregunta</label>
+        <input id="question" name="question" maxlength="500" placeholder="Preguntale algo a Henry Ford…" required>
+        <button id="send" type="submit">Preguntar</button>
+      </form>
+    </section>
+  </main>
+  <script src="./scripts/app.js"></script>
+</body>
+</html>
