@@ -25,9 +25,12 @@ export default async function handler(req, res) {
         model,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
-        // OJO: gpt-oss es modelo de razonamiento y NO acepta max_tokens;
-        // hay que usar max_completion_tokens.
-        max_completion_tokens: 500
+        // gpt-oss "piensa" antes de responder y esos tokens TAMBIÉN cuentan
+        // dentro de max_completion_tokens. Con esfuerzo bajo + límite amplio
+        // le queda margen para la respuesta (que igual está acotada a 70
+        // palabras por el prompt).
+        reasoning_effort: 'low',
+        max_completion_tokens: 2048
       })
     });
 
@@ -39,13 +42,15 @@ export default async function handler(req, res) {
       return res.status(groqRes.status).json({ error: `Groq (${model}): ${msg}` });
     }
 
-    const message = data?.choices?.[0]?.message || {};
+    const choice = data?.choices?.[0] || {};
+    const message = choice.message || {};
     const text = typeof message.content === 'string' ? message.content.trim() : '';
 
     if (!text) {
       // Se loguea la respuesta cruda para diagnosticar en los Function Logs de Vercel.
       console.error('Groq sin texto:', JSON.stringify(data).slice(0, 2000));
-      return res.status(500).json({ error: `Groq (${model}) no devolvió texto. Revisá los Function Logs en Vercel para ver la respuesta cruda.` });
+      const reason = choice.finish_reason ? ` (finish_reason: ${choice.finish_reason})` : '';
+      return res.status(500).json({ error: `Groq (${model}) no devolvió texto${reason}. Probá de nuevo; si persiste, revisá los Function Logs en Vercel.` });
     }
 
     return res.status(200).json({ response: text });
