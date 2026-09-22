@@ -25,25 +25,32 @@ export default async function handler(req, res) {
         model,
         messages: [{ role: 'user', content: prompt }],
         temperature: 0.7,
-        max_tokens: 300
+        // OJO: gpt-oss es modelo de razonamiento y NO acepta max_tokens;
+        // hay que usar max_completion_tokens.
+        max_completion_tokens: 500
       })
     });
 
     const data = await groqRes.json();
 
     if (!groqRes.ok) {
+      console.error('Groq error:', JSON.stringify(data).slice(0, 2000));
       const msg = data?.error?.message || 'Error en la API de Groq.';
-      return res.status(groqRes.status).json({ error: msg });
+      return res.status(groqRes.status).json({ error: `Groq (${model}): ${msg}` });
     }
 
-    const text = data?.choices?.[0]?.message?.content?.trim();
+    const message = data?.choices?.[0]?.message || {};
+    const text = typeof message.content === 'string' ? message.content.trim() : '';
 
     if (!text) {
-      return res.status(500).json({ error: 'Groq no devolvió texto.' });
+      // Se loguea la respuesta cruda para diagnosticar en los Function Logs de Vercel.
+      console.error('Groq sin texto:', JSON.stringify(data).slice(0, 2000));
+      return res.status(500).json({ error: `Groq (${model}) no devolvió texto. Revisá los Function Logs en Vercel para ver la respuesta cruda.` });
     }
 
     return res.status(200).json({ response: text });
   } catch (err) {
+    console.error('Proxy Groq:', err?.message);
     return res.status(500).json({ error: err?.message || 'Error interno.' });
   }
 }
