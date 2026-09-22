@@ -9,13 +9,13 @@ Elegís un personaje clickeando sobre el escenario y le hacés preguntas en un p
 - Escenario point-and-click con image-map + sprites y mensajes de hover
 - Panel de personaje con retrato y nombre activo
 - Chat con historial, estados de carga (`Pensando…`) y manejo de errores
-- Respuestas generadas por Gemini, limitadas a 70 palabras, sin inventar hechos
+- Respuestas generadas por Groq (`openai/gpt-oss-20b`, gratis), limitadas a 70 palabras, sin inventar hechos
 - Escenario 100% configurable por `config.json` sin tocar código
 
 ## 🛠️ Stack
 - **Frontend:** HTML + CSS + JS vanilla (sin frameworks)
-- **Backend:** Serverless Function `api/index.js` como proxy seguro a Gemini
-- **IA:** `gemini-2.0-flash` (configurable por `GEMINI_MODEL`)
+- **Backend:** Serverless Function `api/index.js` como proxy seguro a Groq
+- **IA:** `openai/gpt-oss-20b` (gratuito, configurable por `GROQ_MODEL`)
 - **Deploy:** Vercel
 
 ## 📁 Estructura
@@ -24,7 +24,7 @@ ricos/
 ├── index.html      # layout: personaje / escenario / logo / chat
 ├── config.json     # escenario, rostros y áreas clickeables
 ├── scripts/app.js  # carga config, sprites y chat con /api
-├── api/index.js    # POST {prompt} -> Gemini
+├── api/index.js    # POST {prompt} -> Groq
 ├── styles/style.css
 └── images/
 ```
@@ -42,5 +42,5 @@ ricos/
 
 ## 🚀 Uso local
 1. `npm i -g vercel` y `vercel dev`
-2. Setear env var: `GEMINI_API_KEY=tu_key` (opcional: `GEMINI_MODEL=gemini-2.0-flash`)
+2. Setear env var: `GROQ_API_KEY=tu_key` (la creás en https://console.groq.com/keys; opcional: `GROQ_MODEL=openai/gpt-oss-20b`)
 3. Abrir `http://localhost:3000` y clickear un magnate para empezar a preguntar.
